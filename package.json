@@ -10,6 +10,10 @@
     "lint": "eslint .",
     "devtools": "react-devtools"
   },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git-codecommit.ap-south-1.amazonaws.com/v1/repos/b2b-mobile-app"
+  },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.13.3",
     "@react-native-community/checkbox": "^0.5.7",
