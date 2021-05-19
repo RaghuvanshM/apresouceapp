@@ -23,12 +23,13 @@ export default class Splash extends Component {
     this.animateToTop();
   }
 
-  init = () => {
+  init = async() => {
+    var token = await AsyncStorage.getItem("token");
     var payload = {
       unique_id: getUniqueId(),
       fcm_id: "fcmid",
       app_type: AppConstants.appType,
-      token: null,
+      token: token,
       app_version: AppConstants.appVersion,
       extra_info: null,
     };
@@ -39,13 +40,24 @@ export default class Splash extends Component {
       null,
       (response) => {
         console.log(response);
-        this.redirect(response.status);
+        this.getConf(response);        
       },
       (error) => {
         console.log(error);
       }
     );
   };
+
+  getConf=async(response)=>{
+    var conf = await AsyncStorage.getItem('landingpage_configurations');
+    conf = JSON.parse(conf);
+    if(conf && (response.landing_page_version == conf.version)){
+      AppviewModel.getLandingPage = false;
+    } else {
+      AppviewModel.getLandingPage = true;
+    }
+    this.redirect(response.status);
+  }
   animateToBottom() {
     Animated.timing(this.topAnimatorValue, {
       toValue: 1,

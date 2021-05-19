@@ -4,6 +4,7 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import Images from '../../utils/Images';
 import styles from './style';
 import moment from 'moment';
+import AppviewModel from '../../utils/AppviewModel';
 
 export default class DrawerContent extends Component {
   tabs = [
@@ -38,13 +39,13 @@ export default class DrawerContent extends Component {
         break;
       case 7:
         AsyncStorage.removeItem('token');
+        AsyncStorage.removeItem('user');
         this.props.navigation.navigate('authStack');
         break;
     }
   };
 
   render() {
-    console.log('render method run')
     return (
       <View style={styles.container}>
         {Platform.OS == 'ios' &&<View style={styles.iosHeader} />}
@@ -52,9 +53,10 @@ export default class DrawerContent extends Component {
           <View style={styles.profileImage}>
             <Image source={Images.profileIcon} style={styles.img} />
           </View>
-          <Text style={styles.name}>john </Text>
-          <Text style={styles.custId}>Customer ID : ISD23n2j33200</Text>
-          <Text style={styles.join}>Joined : {moment(new Date()).format('D.MM.YYYY')}</Text>
+          <Text style={styles.name}>{AppviewModel.loggedInUser?AppviewModel.loggedInUser.CompanyName:''}</Text>
+          <Text style={[styles.name,{fontSize:12,marginTop:0}]}>{AppviewModel.loggedInUser?AppviewModel.loggedInUser.FName:''}</Text>
+          <Text style={styles.custId}>Customer ID : {AppviewModel.loggedInUser?AppviewModel.loggedInUser.ConsumerID:''}</Text>
+          <Text style={styles.join}>Joined : {AppviewModel.loggedInUser?moment(AppviewModel.loggedInUser.EntryTime).format('D.MM.YYYY'):''}</Text>
         </View>
         <View style={styles.tabSection}>
           {this.tabs.map((item, index) => {

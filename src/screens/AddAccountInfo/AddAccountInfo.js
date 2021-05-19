@@ -27,12 +27,14 @@ export default class AddAccountInfo extends Component {
       shopName: "",
       fname: "",
       pincode: "",
+      ReceiveUpdatesOnWhatsapp:false
     };
     console.log(props.route.params.token);
   }
 
-  setLoggedInUser = () => {
+  setLoggedInUser = (response) => {
     AsyncStorage.setItem("token", this.state.token);
+    AsyncStorage.setItem("user", JSON.stringify(response.user_info));
     this.props.navigation.navigate("appStack");
   };
 
@@ -43,7 +45,8 @@ export default class AddAccountInfo extends Component {
       token: this.state.token,
       shop_name: this.state.shopName,
       fname:this.state.fname,
-      pincode:this.state.pincode
+      pincode:this.state.pincode,
+      ReceiveUpdatesOnWhatsapp:this.state.ReceiveUpdatesOnWhatsapp
     };
     console.log(payload);
     AppviewModel.sendApiCall(
@@ -52,7 +55,7 @@ export default class AddAccountInfo extends Component {
       null,
       (response) => {
         console.log(response);
-        this.setLoggedInUser();
+        this.setLoggedInUser(response);
       },
       (error) => {
         console.log(error);
@@ -129,6 +132,8 @@ export default class AddAccountInfo extends Component {
                   onCheckColor={"green"}
                   onFillColor={"#fff"}
                   onTintColor={"#888"}
+                  value={this.state.ReceiveUpdatesOnWhatsapp}
+                  onValueChange={(val)=>this.setState({ReceiveUpdatesOnWhatsapp:val})}
                 />
                 <Text style={styles.label3}>
                   Receive order and account related updates on whatsApp

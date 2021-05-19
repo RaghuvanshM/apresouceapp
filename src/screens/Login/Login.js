@@ -14,12 +14,15 @@ import Colors from "../../utils/Colors";
 import { getUniqueId } from "react-native-device-info";
 import AppConstants from "../../utils/AppConstants";
 import AppviewModel from "../../utils/AppviewModel";
+import Dropdown from '../../controls/Dropdown/Dropdown';
 
 export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
       mobile: "",
+      countries:[],
+      selectedCountry:'91'
     };
   }
 
@@ -40,6 +43,14 @@ export default class Login extends Component {
       (response) => {
         console.log(response);
         AppviewModel.countries = response.data;
+        var tranform = response.data.map((item)=>{
+          var row = {};
+          row.label='+'+item.CountryCode+' '+item.Name;
+          row.value=item.CountryCode;
+          return row;
+        })
+        console.log(tranform);
+        this.setState({countries:tranform})
       },
       (error) => {
         console.log(error);
@@ -51,7 +62,7 @@ export default class Login extends Component {
     var payload = {
       unique_id: getUniqueId(),
       app_type: AppConstants.appType,
-      country_code: AppviewModel.countries[0].CountryCode,
+      country_code: this.state.selectedCountry,
       mobile: this.state.mobile,
     };
     console.log(payload);
@@ -93,8 +104,33 @@ export default class Login extends Component {
                 code
               </Text>
               <View style={styles.widget}>
-                <View style={{ justifyContent: "center", marginRight: 10 }}>
-                  <Image source={Images.phone} style={styles.arrowRight} />
+                <View style={{ justifyContent: "center", marginRight: 10,borderRightWidth:1,borderColor:Colors.themeColor1 }}>
+                <Dropdown
+                      showImage={false}
+                      showIdInLabel={false}
+                      selectedValue={this.state.selectedCountry}
+                      defaultText={'Country Code'}
+                      onValueChange={(itemValue, itemIndex) => {
+                        this.setState({selectedCountry:itemValue});
+                        AppviewModel.selectedCountry = itemValue;
+                      }}
+                      Data={this.state.countries}
+                      style={[
+                        {
+                          width: 42,
+                          paddingHorizontal: 0,
+                          paddingVertical: 0,
+                        },
+                      ]}
+                      itemStyle={[
+                        {
+                          fontSize: 16,
+                          color: Colors.themeColor1,
+                          fontFamily:Colors.font,
+                        },
+                      ]}
+                      showCaret={false}
+                    />
                 </View>
                 <View style={{ justifyContent: "center", flex: 1 }}>
                   <TextInput
@@ -102,7 +138,7 @@ export default class Login extends Component {
                     onChangeText={(val) => this.setState({ mobile: val })}
                     maxLength={10}
                     keyboardType={"phone-pad"}
-                    placeholder={"+91 Mobile number"}
+                    placeholder={"Mobile number"}
                     style={styles.textbox}
                     placeholderTextColor={Colors.themeColor1 + "70"}
                   />

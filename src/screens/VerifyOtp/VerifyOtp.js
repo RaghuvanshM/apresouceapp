@@ -44,8 +44,9 @@ export default class VerifyOtp extends Component {
   goToAddInfoScreen = (token) => {
     this.props.navigation.navigate("addAccountInfoScreen",{token:token});
   };
-  setLoggedInUser = (token) => {
+  setLoggedInUser = (token,user) => {
     AsyncStorage.setItem("token", token);
+    AsyncStorage.setItem("user", JSON.stringify(user));
     this.props.navigation.navigate("greetingScreen");
   };
 
@@ -53,7 +54,7 @@ export default class VerifyOtp extends Component {
     var payload = {
       unique_id: getUniqueId(),
       app_type: AppConstants.appType,
-      country_code: AppviewModel.countries[0].CountryCode,
+      country_code: AppviewModel.selectedCountry,
       mobile: this.props.route.params.mobile,
       otp: this.state.otp,
     };
@@ -74,7 +75,7 @@ export default class VerifyOtp extends Component {
             );
             break;
           case 1:
-            this.setLoggedInUser(response.AccessToken);
+            this.setLoggedInUser(response.AccessToken,response.user_info);
             break;
           case 2:
             break;

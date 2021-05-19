@@ -33,7 +33,11 @@
     "react-native-reanimated": "^1.9.0",
     "react-native-safe-area-context": "^3.0.2",
     "react-native-screens": "^2.8.0",
+    "react-native-shimmer": "^0.6.0",
     "react-native-vector-icons": "^8.0.0",
+    "react-native-webview": "^11.4.3",
+    "react-redux": "^7.2.3",
+    "redux": "^4.0.5",
     "rn-fetch-blob": "^0.12.0"
   },
   "devDependencies": {
