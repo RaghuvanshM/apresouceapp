@@ -18,8 +18,10 @@ import AppviewModel from "../../utils/AppviewModel";
 import CheckBox from "@react-native-community/checkbox";
 import { getUniqueId } from "react-native-device-info";
 import AppConstants from "../../utils/AppConstants";
+import {connect} from 'react-redux'
+import {saveUserData} from '../../store/action' 
 
-export default class AddAccountInfo extends Component {
+ class AddAccountInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -34,7 +36,8 @@ export default class AddAccountInfo extends Component {
 
   setLoggedInUser = (response) => {
     AsyncStorage.setItem("token", this.state.token);
-    AsyncStorage.setItem("user", JSON.stringify(response.user_info));
+   // AsyncStorage.setItem("user", JSON.stringify(response.user_info));
+   this.props.saveUserData(response.user_info) ;
     this.props.navigation.navigate("appStack");
   };
 
@@ -153,3 +156,11 @@ export default class AddAccountInfo extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  user: state.user
+});
+const mapDispatchToProps = { saveUserData };
+export default connect( 
+  mapStateToProps,mapDispatchToProps
+)(AddAccountInfo);

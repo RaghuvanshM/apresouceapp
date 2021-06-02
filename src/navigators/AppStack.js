@@ -37,7 +37,7 @@ function AppStack(){
 
 function tempStack() {
     return (
-        <Stack.Navigator initialRouteName="homeTabNavigator" headerMode="screen">
+        <Stack.Navigator  initialRouteName="homeTabNavigator" headerMode="screen">
             <Stack.Screen name="homeTabNavigator" component={HomeTabNavigator} options={{title:'',headerShown:false}} />
             <Stack.Screen name="pastOrdersScreen" component={PastOrders} options={{title:'',headerShown:false}} />
             <Stack.Screen name="orderDetailsScreen" component={OrderDetails} options={{title:'',headerShown:false}} />

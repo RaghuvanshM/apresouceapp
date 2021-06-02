@@ -6,7 +6,10 @@ import styles from './style';
 import moment from 'moment';
 import AppviewModel from '../../utils/AppviewModel';
 
-export default class DrawerContent extends Component {
+import {connect} from 'react-redux'
+
+
+ class DrawerContent extends Component {
   tabs = [
     {id: 1, title: 'Past Orders', image: Images.pastOrders},
     {id: 2, title: 'Payment Ledger', image: Images.paymentLedger},
@@ -45,7 +48,12 @@ export default class DrawerContent extends Component {
     }
   };
 
+  componentDidMount(){
+    console.log("userInfo@@",this.props.user.ConsumerID);
+  }
+
   render() {
+    const userInfo  = this.props.user;
     return (
       <View style={styles.container}>
         {Platform.OS == 'ios' &&<View style={styles.iosHeader} />}
@@ -53,10 +61,10 @@ export default class DrawerContent extends Component {
           <View style={styles.profileImage}>
             <Image source={Images.profileIcon} style={styles.img} />
           </View>
-          <Text style={styles.name}>{AppviewModel.loggedInUser?AppviewModel.loggedInUser.CompanyName:''}</Text>
-          <Text style={[styles.name,{fontSize:12,marginTop:0}]}>{AppviewModel.loggedInUser?AppviewModel.loggedInUser.FName:''}</Text>
-          <Text style={styles.custId}>Customer ID : {AppviewModel.loggedInUser?AppviewModel.loggedInUser.ConsumerID:''}</Text>
-          <Text style={styles.join}>Joined : {AppviewModel.loggedInUser?moment(AppviewModel.loggedInUser.EntryTime).format('D.MM.YYYY'):''}</Text>
+          <Text style={styles.name}>{userInfo.CompanyName}</Text>
+          <Text style={[styles.name,{fontSize:12,marginTop:0}]}>{userInfo.FName}</Text>
+          <Text style={styles.custId}>Customer ID : {userInfo.ID}</Text>
+          <Text style={styles.join}>Joined : {moment(userInfo.EntryTime).format('D.MM.YYYY')}</Text>
         </View>
         <View style={styles.tabSection}>
           {this.tabs.map((item, index) => {
@@ -82,3 +90,11 @@ export default class DrawerContent extends Component {
     );
   }
 }
+
+
+const mapStateToProps = state => ({
+  user: state.user
+});
+export default connect(
+  mapStateToProps, 
+)(DrawerContent);

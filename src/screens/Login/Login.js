@@ -65,7 +65,7 @@ export default class Login extends Component {
       country_code: this.state.selectedCountry,
       mobile: this.state.mobile,
     };
-    console.log(payload);
+    console.log("patload@@",payload);
     AppviewModel.sendApiCall(
       "/login-signup/login",
       payload,

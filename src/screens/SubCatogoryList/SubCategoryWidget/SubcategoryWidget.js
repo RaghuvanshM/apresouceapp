@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
+import AppConstants from "../../../utils/AppConstants";
 import styles from "./style";
 
 export default class SubCategoryWidget extends Component {
@@ -19,7 +20,7 @@ export default class SubCategoryWidget extends Component {
                 ? "stylesCartScreen"
                 : this.props.showWishlistOptions
                 ? "stylesWishlistScreen"
-                : "stylesListScreen"
+                : "stylesListScreen",{id:data.id}
             )
           }
           style={[
@@ -28,12 +29,13 @@ export default class SubCategoryWidget extends Component {
           ]}
         >
           <View style={styles.imgContainer}>
-            <Image style={styles.proImg}/>
+            <Image source={{uri:AppConstants.baseUrl+data.image}} style={styles.proImg}/>
           </View>
           <View style={styles.labelContainer}>
             <Text style={styles.label} numberOfLines={1}>
               {data.title}
             </Text>
+            
             {(this.props.showCartOptions || this.props.showWishlistOptions) && (
               <View>
                 <Text style={styles.label1} numberOfLines={1}>

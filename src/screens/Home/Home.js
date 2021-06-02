@@ -21,7 +21,7 @@ import FlatListSlider from "../../controls/FlatListSlider/FlatListSlider";
 
 export default class Home extends Component {
   constructor(props) {
-    super(props);
+    super(props); 
     this.state = {
       isLoading: true,
       configurations: null,
@@ -29,6 +29,7 @@ export default class Home extends Component {
       trends: [],
       occasions: [],
       buyTheDays: [],
+      isBorder:true,
     };
   }
 
@@ -141,17 +142,19 @@ getByTheDays = () => {
   };
 
   renderCategory = (category, index) => {
+    console.log("category",category.id);
     return (
       <TouchableOpacity
         onPress={() => {
           this.props.navigation.navigate("subCategoryListScreen", {
-            title: category.title,
+            title: category.title ,
+            id:category.id,
           });
         }}
         key={category.id}
         style={styles.category}
       >
-        <View style={styles.catImage}>
+        <View  style={[styles.catImage,{borderRadius: !this.state.isBorder ? 0 :200 }]} >
           <Image source={{uri:AppConstants.baseUrl+category.image}} style={{width:'100%',height:'100%',resizeMode:'cover'}}/>
         </View>
         <Text style={styles.catLabel}>{category.title}</Text>
@@ -316,7 +319,9 @@ getByTheDays = () => {
     return (
       <View style={styles.container}>
         <MainHeader {...this.props} />
+
         {this.state.isLoading && <HomePageLoading />}
+
         {!this.state.isLoading && (
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.bannerSection}>

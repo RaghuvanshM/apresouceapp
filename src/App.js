@@ -4,12 +4,20 @@ import { NavigationContainer } from '@react-navigation/native';
 import Splash from './screens/Splash/Splash';
 import AppStack from './navigators/AppStack';
 import AuthStack from './navigators/AuthStack';
+
+import {PersistGate} from 'redux-persist/integration/react';
+import {Provider} from 'react-redux';
+import {store, persistor} from '../src/store/'; 
+
+
 const Stack = createStackNavigator();
 
 export default class App extends Component {
 
   render() {
     return (
+      <Provider store={store}>
+      <PersistGate persistor={persistor}>  
       <NavigationContainer>
         <Stack.Navigator initialRouteName="splashScreen" headerMode="screen">
           <Stack.Screen
@@ -29,6 +37,9 @@ export default class App extends Component {
           />
         </Stack.Navigator>
       </NavigationContainer>
+   
+   </PersistGate>
+   </Provider>
     );
   }
 }

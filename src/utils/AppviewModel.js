@@ -18,6 +18,8 @@ export default {
   ) => {
     method = method ? method : "POST";
     var token = await AsyncStorage.getItem("token");
+    console.log("token",token) ; 
+    
     var headers = {
       "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
     };

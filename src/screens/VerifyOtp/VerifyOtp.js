@@ -19,8 +19,12 @@ import AppConstants from "../../utils/AppConstants";
 import AppviewModel from "../../utils/AppviewModel";
 import User from "../../models/User";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {connect} from 'react-redux'
+import {saveUserData} from '../../store/action'  
+import Toast from 'react-native-simple-toast';
 
-export default class VerifyOtp extends Component {
+
+ class VerifyOtp extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -46,7 +50,9 @@ export default class VerifyOtp extends Component {
   };
   setLoggedInUser = (token,user) => {
     AsyncStorage.setItem("token", token);
-    AsyncStorage.setItem("user", JSON.stringify(user));
+    console.log("user",user);
+   // AsyncStorage.setItem("user", JSON.stringify(user));
+      this.props.saveUserData(user) ;
     this.props.navigation.navigate("greetingScreen");
   };
 
@@ -64,7 +70,7 @@ export default class VerifyOtp extends Component {
       payload,
       null,
       (response) => {
-        console.log(response);
+        console.log( response);
         switch (response.status) {
           case 0:
             Alert.alert(
@@ -91,6 +97,33 @@ export default class VerifyOtp extends Component {
       }
     );
   };
+
+
+  ResendOtpApiCall = () => {
+    var payload = {
+      unique_id: getUniqueId(),
+      app_type: AppConstants.appType,
+      country_code: AppviewModel.selectedCountry,
+      mobile: this.props.route.params.mobile,
+    };
+    AppviewModel.sendApiCall(
+      "/login-signup/login",
+      payload,
+      null,
+      (response) => {
+        console.log(response);
+        if(response.status == 1){
+          Toast.show("An OTP has been sent to your Registered Mobile Number. ",Toast.SHORT)
+        }
+        
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+
+
 
   render() {
     return (
@@ -134,13 +167,13 @@ export default class VerifyOtp extends Component {
                   </TouchableOpacity>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <TouchableOpacity style={{ alignSelf: "flex-end" }}>
+                  <TouchableOpacity  onPress={()=>this.ResendOtpApiCall()} style={{ alignSelf: "flex-end" }}>
                     <Text style={styles.label3}>Resend OTP</Text>
                   </TouchableOpacity>
                 </View>
-              </View>
+              </View> 
             </View>
-          </ScrollView>
+          </ScrollView> 
           <View style={styles.section2}>
             <Button
               title="VERIFY CODE"
@@ -153,3 +186,11 @@ export default class VerifyOtp extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  user: state.user
+});
+const mapDispatchToProps = { saveUserData };
+export default connect(
+  mapStateToProps,mapDispatchToProps
+)(VerifyOtp);

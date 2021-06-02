@@ -16,6 +16,8 @@ import Header from "../Header/Header";
 import OrderBooking from "../OrderBooking/OrderBooking";
 import styles from "./style";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AppConstants from "../../utils/AppConstants";
+
 
 export default class ColorsList extends Component {
   colors = [
@@ -79,16 +81,20 @@ export default class ColorsList extends Component {
 
   render() {
     var data = this.props.route.params.data;
+   
+    console.log(data);
+
     return (
+      
       <View style={styles.container}>
-        <Modal
+        {/* <Modal
           transparent={true}
           visible={this.state.showPopup}
           onRequestClose={() => this.closePopup()}
         >
           <Popup onClose={() => this.closePopup()}>
             <View style={styles.popup}>
-              <Image source={Images.success} style={styles.successIcon} />
+              <Image source={Images.success} style={styles.successIcon}/>
               {this.state.for == "cart" && (
                 <View style={{ width: "100%", alignItems: "center" }}>
                   <View style={styles.popupImg} />
@@ -118,7 +124,7 @@ export default class ColorsList extends Component {
               />
             )}
           </Popup>
-        </Modal>
+        </Modal> */}
         <Header
           title={data.title}
           {...this.props}
@@ -130,7 +136,8 @@ export default class ColorsList extends Component {
             <Text style={styles.proIdLabel}>Product ID : {data.id}</Text>
           </View>
           <View style={{ borderBottomWidth: 1, alignSelf: "center" }}>
-            <Text style={styles.label1}>Select among 20+ Color :</Text>
+            <Text style={styles.label1}>Select among {data.available_colors.length} Color</Text> 
+           
           </View>
           <View>
             <ScrollView
@@ -138,16 +145,21 @@ export default class ColorsList extends Component {
               style={{ marginTop: 20, paddingHorizontal: 5 }}
               horizontal={true}
             >
-              {data.colors.map((item, index) => {
+              {data.available_colors.map((item, index) => {
                 return (
                   <View style={styles.imageTab} key={index}>
-                    <View style={styles.imageTabImg} />
+                    <View style={styles.imageTabImg}> 
+                    <Image resizeMode ="stretch"
+                       source ={{uri:AppConstants.baseUrl+data.image}}
+                        style={styles.imageTabImg }
+                      />
+                    </View>
                     <Text style={styles.imageLabel}>
-                      <Image
+                      {/* <Image
                         source={Images.heart}
                         style={styles.imageLabelHeart}
-                      />{" "}
-                      {item.charAt(0).toUpperCase() + item.substring(1)}
+                      />{" "} */}
+                      {item.color.charAt(0).toUpperCase() + item.color.substring(1)}
                     </Text>
                   </View>
                 );
@@ -156,28 +168,34 @@ export default class ColorsList extends Component {
           </View>
           <View style={styles.thumbSection}>
             <View style={styles.mainImage}>
-              <View style={styles.img} />
+              <Image  style={[styles.img,{borderRadius:5}]} source ={{uri:AppConstants.baseUrl+data.image}} />
+              {/* <View style={styles.img} /> */}
             </View>
             <View style={styles.listImages}>
               <ScrollView
                 style={styles.scroll}
                 showsVerticalScrollIndicator={false}
               >
-                {data.subImages.map((item, index) => {
-                  return <View key={index} style={styles.subImage} />;
+                {data.available_colors.map((item, index) => {
+                  return <View key={index} style={styles.subImage} >
+                    <Image resizeMode ="stretch" 
+                       source ={{uri:AppConstants.baseUrl+data.image}}
+                         style={{...styles.subImage,borderRadius:5} }
+                      />
+                  </View>
                 })}
               </ScrollView>
             </View>
           </View>
           <View style={{ padding: 15 }}>
             <Text style={styles.title}>
-              {data.title} : {data.subTitle}
+              {data.title} : {data.subtitle}
             </Text>
-            <Text style={styles.priceLabel}><Icon name="rupee"/> xx.xx/pc</Text>
+            <Text style={styles.priceLabel}><Icon name="rupee"/>{data.piece_rate}</Text>
             <View style={{ flexDirection: "row" }}>
-              <Text style={styles.mrpLabel}><Icon name="rupee"/> xx.xx/pc</Text>
+              <Text style={styles.mrpLabel}><Icon name="rupee"/>{data.piece_rate}/pc</Text>
               <Text style={[{ flex: 1, textAlign: "center" }, styles.mrpLabel]}>
-                XX% Margin
+               {data.margin} Margin
               </Text>
               <Text style={styles.mrpLabel}>
                 MRP: <Text style={{ color: "green" }}><Icon name="rupee"/> {data.price}/-</Text>
@@ -217,15 +235,11 @@ export default class ColorsList extends Component {
             </View>
           </View>
           {this.state.isProDetails && <View />}
+
           {!this.state.isProDetails && (
             <View style={{ paddingHorizontal: 15 }}>
               <Text style={styles.about}>
-                Pamper yourself with Singla's collection of Printed A-line
-                dresses and feel like a showstopper every time you step out of
-                your house. Made from 90% lightweight POLYESTER and 10%,
-                elastane, this piece is the perfect example of understated
-                elegance. The asymmetrical hemline demands just the right amount
-                of attention. It is easy to wash and incredibly lightweight
+               {data.description}
               </Text>
               <View style={styles.saperator} />
               <Text style={styles.about}>CARE INSTRUCTIONS:</Text>
@@ -257,7 +271,7 @@ export default class ColorsList extends Component {
           )}
           {this.state.isProDetails && (
             <View style={styles.orderBooking}>
-              <OrderBooking data={data.sizes} />
+              <OrderBooking data={data.available_sizes} />
             </View>
           )}
           <View style={styles.similarContainer}>

@@ -92,6 +92,7 @@ export default class HomePageLoading extends Component {
           <View style={styles.kycInfoSection}></View>
           <View style={styles.categoriesSection}>
             <HeadingView title={"Categories"} />
+           
             <View style={styles.categories}>
               {this.state.categories.map((item, index) => {
                 return this.renderCategory(item, index);

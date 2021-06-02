@@ -24,29 +24,29 @@ export default class StyleWidget2 extends Component {
           <View style={styles.mainImage}>
             <View style={styles.img} />
           </View>
-          <View style={styles.listImages}>
+          {/* <View style={styles.listImages}>
             <ScrollView style={styles.scroll}>
-              {data.subImages.map((item,index) => {
+              {data.available_colors.map((item,index) => {
                 return <View key={index} style={styles.subImage} />;
               })}
             </ScrollView>
-          </View>
+          </View> */}
         </View>
         <View style={{ flex: 1, paddingHorizontal: 10 }}>
           <View style={{ marginTop: 3 }}>
             <Text style={styles.title}>
-              {data.title} : {data.subTitle}
+              {data.title} : {data.subtitle}
             </Text>
           </View>
           <View style={{ flexDirection: "row" }}>
             <View style={{ flex: 1 }}>
               <Text style={styles.sizes}>Article : {data.article}</Text>
               <Text style={styles.sizes}>
-                {data.sizes.map((item, index) => {
+                {data.available_sizes.map((item, index) => {
                   return (
                     <Text key={index}>
                       {item.size}
-                      {index != data.sizes.length - 1 ? ", " : " "}
+                      {index != data.available_sizes.length - 1 ? ", " : " "}
                     </Text>
                   );
                 })}
@@ -54,11 +54,11 @@ export default class StyleWidget2 extends Component {
             </View>
             <View>
               <Text style={[styles.marginLabel, { alignSelf: "flex-end" }]}>
-                {data.pieceRate}/pc
+                {data.piece_rate}/pc
               </Text>
               <Text style={styles.marginLabel}>
                 WSP: <Icon name="rupee"/> 
-                <Text style={{ color: "green" }}> {data.pieceRate}/pc</Text>
+                <Text style={{ color: "green" }}> {data.piece_rate}/pc</Text>
               </Text>
             </View>
           </View>

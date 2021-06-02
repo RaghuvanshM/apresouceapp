@@ -58,5 +58,6 @@ export default {
   userColored: require('../assets/images/userColored.png'),
   accInfoBanner: require('../assets/images/accInfoBanner.png'),
   loggedInUser: require('../assets/images/loggedInUser.png'),
+  noDataFound:require('../assets/images/no_data_found.png'),
   
 };
