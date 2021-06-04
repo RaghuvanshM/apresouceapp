@@ -13,6 +13,7 @@ import Images from "../../utils/Images";
 import Header from "../Header/Header";
 import SubCategoryWidget from "../SubCatogoryList/SubCategoryWidget/SubcategoryWidget";
 import styles from "./style";
+import AppviewModel from "../../utils/AppviewModel";
 
 export default class Cart extends Component {
   constructor(props) {
@@ -39,6 +40,20 @@ export default class Cart extends Component {
     };
   }
 
+  componentDidMount() {
+    AppviewModel.sendApiCall(
+      "/ocassions/get",  
+      // "/cart/getsubcategories",
+      null,
+      'GET',
+      (response) => {
+        console.log(response);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
   renderList = ({ item, index }) => {
     return (
       <SubCategoryWidget
@@ -51,8 +66,8 @@ export default class Cart extends Component {
   };
 
   closePopup = () => {
-    this.setState({ showPopup: false },()=>{
-      this.props.navigation.navigate('homeTabNavigator')
+    this.setState({ showPopup: false }, () => {
+      this.props.navigation.navigate("homeTabNavigator");
     });
   };
 
@@ -99,7 +114,7 @@ export default class Cart extends Component {
           <FlatList
             showsVerticalScrollIndicator={false}
             style={{ marginTop: 5 }}
-            contentContainerStyle={{ paddingBottom: 10,paddingHorizontal:10 }}
+            contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 10 }}
             data={this.state.data}
             renderItem={this.renderList}
             numColumns={2}

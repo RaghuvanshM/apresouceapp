@@ -46,7 +46,7 @@ export default {
       requestBody.body = body;
     }
     NetInfo.fetch().then((state) => {
-      console.log(AppConstants.baseUrl + url, requestBody)
+      console.log(AppConstants.baseUrl + url)
       if (state.isConnected) {
         fetch(AppConstants.baseUrl + url, requestBody)
           .then((response) => {

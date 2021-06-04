@@ -95,16 +95,16 @@ export default class ColorsList extends Component {
       null,
       (response) => {
          console.log(response)
-        // this.setState({
-        //   stylesArr:
-        //     page === 0 ? response.data : [...stylesArr, ...response.data],
-        //   isLoading: false, dataTotalSize: response.data.length
-        // });
-        // if (response.data.length == 0) {
-        //   this.setState({ DataFound: false });
-        // } else {
-        //   this.setState({ DataFound: true });
-        // }
+        this.setState({
+          stylesArr:
+            page === 0 ? response.data : [...stylesArr, ...response.data],
+          isLoading: false, dataTotalSize: response.data.length
+        });
+        if (response.data.length == 0) {
+          this.setState({ DataFound: false });
+        } else {
+          this.setState({ DataFound: true });
+        }
       },
       (error) => {
         console.log(error);
@@ -302,7 +302,7 @@ export default class ColorsList extends Component {
               <View style={{flexDirection:'row',flex:1}}>
                 {data.instruction.instruction_items.map((a) => {
                   return (
-                    <View style={{flexDirection:'row'}}>
+                    <View style={{flexDirection:'row',paddingRight:20}}>
                     <Text style={styles.intrutionsubtitle}>
                       {a}
                     </Text>
