@@ -2,6 +2,7 @@ const {object} = require('prop-types');
 
 module.exports = Object.freeze({
   baseUrl: 'https://devb2bapi.singlaapparels.com',
+  // baseUrl: 'http://192.168.43.112:5000',
   appVersion:1.0,
   appType:21,
   pageCodes:{

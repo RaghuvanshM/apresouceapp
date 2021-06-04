@@ -19,7 +19,6 @@ export default {
 
     method = method ? method : "POST";
     var token = await AsyncStorage.getItem("token");
-    console.log("token", token);
 
     var headers = {
       "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
@@ -34,7 +33,7 @@ export default {
     var body = [];
     for (var property in payload) {
       var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(payload[property]);
+      var encodedValue = payload[property];
       body.push(encodedKey + "=" + encodedValue);
     }
     body = body.join("&");
@@ -45,16 +44,17 @@ export default {
     if (method == "POST") {
       requestBody.body = body;
     }
+    console.log(body);
     NetInfo.fetch().then((state) => {
-      console.log(AppConstants.baseUrl + url, requestBody)
       if (state.isConnected) {
         fetch(AppConstants.baseUrl + url, requestBody)
-          .then((response) => {
+          .then((response) => {            
             console.log(response);
             callState = response.status;
             return response.json();
           })
           .then((responsejson) => {
+            console.log(callState);
             if (callState == 200 || callState == 201) {
               successHandler(responsejson);
             } else {

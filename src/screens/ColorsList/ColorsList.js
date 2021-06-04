@@ -80,31 +80,22 @@ export default class ColorsList extends Component {
     );
   };
   addToCartApiCall = () => {
-    let  {data } = this.props.route.params
-    const { addtocartdata } = this.state;
+    var qty  = [
+      {size:'xxxl',qty:20},
+      {size:'Mm',qty:25},
+    ];
     var payload = {
       color_id: 1,
       style_id:123,
       subcategory_id:12333,
-      quatity:[{"size":"xxxL","qty":20},{"size":"Mm","qty":25}]
+      quantity:'[{"size":"xxxL","qty":20},{"size":"Mm","qty":25}]'
     };
- console.log('payload',payload)
     AppviewModel.sendApiCall(
       "/cart/addcart",
       payload,
       null,
       (response) => {
          console.log(response)
-        // this.setState({
-        //   stylesArr:
-        //     page === 0 ? response.data : [...stylesArr, ...response.data],
-        //   isLoading: false, dataTotalSize: response.data.length
-        // });
-        // if (response.data.length == 0) {
-        //   this.setState({ DataFound: false });
-        // } else {
-        //   this.setState({ DataFound: true });
-        // }
       },
       (error) => {
         console.log(error);
@@ -233,7 +224,7 @@ export default class ColorsList extends Component {
                 showsVerticalScrollIndicator={false}
               >
                 {data.available_colors.map((item, index) => {
-                  return <View key={index} style={styles.subImage} >
+                  return <View key={index} style={styles.subImage} key={index}>
                     <FastImage resizeMode="stretch"
                       source={{ uri: AppConstants.baseUrl + data.image }}
                       style={{ ...styles.subImage, borderRadius: 5 }}
@@ -300,9 +291,9 @@ export default class ColorsList extends Component {
               <View style={styles.saperator} />
               <Text style={styles.about}>{`${data.instruction.instruction_title}:`}</Text>
               <View style={{flexDirection:'row',flex:1}}>
-                {data.instruction.instruction_items.map((a) => {
+                {data.instruction.instruction_items.map((a,index) => {
                   return (
-                    <View style={{flexDirection:'row'}}>
+                    <View style={{flexDirection:'row'}} key={index}>
                     <Text style={styles.intrutionsubtitle}>
                       {a}
                     </Text>
