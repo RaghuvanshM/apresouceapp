@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import AppConstants from "../../../utils/AppConstants";
 import styles from "./style";
-
+import FastImage from 'react-native-fast-image';
 export default class SubCategoryWidget extends Component {
   constructor(props) {
     super(props);
@@ -29,7 +29,7 @@ export default class SubCategoryWidget extends Component {
           ]}
         >
           <View style={styles.imgContainer}>
-            <Image source={{uri:AppConstants.baseUrl+data.image}} style={styles.proImg}/>
+            <FastImage source={{uri:AppConstants.baseUrl+data.image}} style={styles.proImg}/>
           </View>
           <View style={styles.labelContainer}>
             <Text style={styles.label} numberOfLines={1}>

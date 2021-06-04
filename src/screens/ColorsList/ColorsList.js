@@ -16,8 +16,11 @@ import Header from "../Header/Header";
 import OrderBooking from "../OrderBooking/OrderBooking";
 import styles from "./style";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import FastImage from 'react-native-fast-image';
+import cloneDeep from 'lodash/cloneDeep';
+import AppviewModel from "../../utils/AppviewModel";
+import axios from 'axios'
 import AppConstants from "../../utils/AppConstants";
-
 
 export default class ColorsList extends Component {
   colors = [
@@ -37,6 +40,8 @@ export default class ColorsList extends Component {
       isProDetails: false,
       listView: true,
       showPopup: false,
+      addtocartdata: [],
+      addtocart: [],
       for: "",
       similarProducts: [
         { id: 1, title: "", image: Images.cat1 },
@@ -74,18 +79,64 @@ export default class ColorsList extends Component {
       </View>
     );
   };
+  addToCartApiCall = () => {
+    let  {data } = this.props.route.params
+    const { addtocartdata } = this.state;
+    var payload = {
+      color_id: 1,
+      style_id:123,
+      subcategory_id:12333,
+      quatity:[{"size":"xxxL","qty":20},{"size":"Mm","qty":25}]
+    };
+ console.log('payload',payload)
+    AppviewModel.sendApiCall(
+      "/cart/addcart",
+      payload,
+      null,
+      (response) => {
+         console.log(response)
+        // this.setState({
+        //   stylesArr:
+        //     page === 0 ? response.data : [...stylesArr, ...response.data],
+        //   isLoading: false, dataTotalSize: response.data.length
+        // });
+        // if (response.data.length == 0) {
+        //   this.setState({ DataFound: false });
+        // } else {
+        //   this.setState({ DataFound: true });
+        // }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
 
+
+  };
   closePopup = () => {
     this.setState({ showPopup: false });
   };
-
+  onAddToCartPres = () => {
+    this.setState({ showPopup: true, for: "wishlist" })
+    this.addToCartApiCall()
+  }
+  onQuantitySelect = (size, quatity) => {
+    let { addtocartdata, addtocart } = this.state
+    const cartdata = cloneDeep(addtocartdata);
+    let singledata = { "size": size, "qty": quatity }
+    const selectedIndex = cartdata.findIndex(d => d.size === singledata.size);
+    if (selectedIndex === -1) {
+      addtocart.push(singledata)
+    }
+    else {
+      addtocart[selectedIndex] = singledata;
+    }
+    console.log(addtocart)
+    this.setState({ addtocartdata: addtocart })
+  }
   render() {
     var data = this.props.route.params.data;
-   
-    console.log(data);
-
     return (
-      
       <View style={styles.container}>
         {/* <Modal
           transparent={true}
@@ -131,13 +182,14 @@ export default class ColorsList extends Component {
           cart={true}
           wishlist={true}
         />
+
         <ScrollView style={styles.section1}>
           <View style={styles.proId}>
             <Text style={styles.proIdLabel}>Product ID : {data.id}</Text>
           </View>
           <View style={{ borderBottomWidth: 1, alignSelf: "center" }}>
-            <Text style={styles.label1}>Select among {data.available_colors.length} Color</Text> 
-           
+            <Text style={styles.label1}>Select among {data.available_colors.length} Color</Text>
+
           </View>
           <View>
             <ScrollView
@@ -148,10 +200,10 @@ export default class ColorsList extends Component {
               {data.available_colors.map((item, index) => {
                 return (
                   <View style={styles.imageTab} key={index}>
-                    <View style={styles.imageTabImg}> 
-                    <Image resizeMode ="stretch"
-                       source ={{uri:AppConstants.baseUrl+data.image}}
-                        style={styles.imageTabImg }
+                    <View style={styles.imageTabImg}>
+                      <FastImage resizeMode='stretch'
+                        source={{ uri: AppConstants.baseUrl + data.image }}
+                        style={styles.imageTabImg}
                       />
                     </View>
                     <Text style={styles.imageLabel}>
@@ -168,7 +220,11 @@ export default class ColorsList extends Component {
           </View>
           <View style={styles.thumbSection}>
             <View style={styles.mainImage}>
-              <Image  style={[styles.img,{borderRadius:5}]} source ={{uri:AppConstants.baseUrl+data.image}} />
+              <FastImage
+                style={[styles.img, { borderRadius: 5 }]}
+                source={{ uri: AppConstants.baseUrl + data.image }}
+                resizeMode='cover'
+              />
               {/* <View style={styles.img} /> */}
             </View>
             <View style={styles.listImages}>
@@ -178,10 +234,10 @@ export default class ColorsList extends Component {
               >
                 {data.available_colors.map((item, index) => {
                   return <View key={index} style={styles.subImage} >
-                    <Image resizeMode ="stretch" 
-                       source ={{uri:AppConstants.baseUrl+data.image}}
-                         style={{...styles.subImage,borderRadius:5} }
-                      />
+                    <FastImage resizeMode="stretch"
+                      source={{ uri: AppConstants.baseUrl + data.image }}
+                      style={{ ...styles.subImage, borderRadius: 5 }}
+                    />
                   </View>
                 })}
               </ScrollView>
@@ -191,14 +247,14 @@ export default class ColorsList extends Component {
             <Text style={styles.title}>
               {data.title} : {data.subtitle}
             </Text>
-            <Text style={styles.priceLabel}><Icon name="rupee"/>{data.piece_rate}</Text>
+            <Text style={styles.priceLabel}><Icon name="rupee" />{data.piece_rate}</Text>
             <View style={{ flexDirection: "row" }}>
-              <Text style={styles.mrpLabel}><Icon name="rupee"/>{data.piece_rate}/pc</Text>
+              <Text style={styles.mrpLabel}><Icon name="rupee" />{data.piece_rate}/pc</Text>
               <Text style={[{ flex: 1, textAlign: "center" }, styles.mrpLabel]}>
-               {data.margin} Margin
+                {data.margin} Margin
               </Text>
               <Text style={styles.mrpLabel}>
-                MRP: <Text style={{ color: "green" }}><Icon name="rupee"/> {data.price}/-</Text>
+                MRP: <Text style={{ color: "green" }}><Icon name="rupee" /> {data.price}/-</Text>
               </Text>
             </View>
           </View>
@@ -239,17 +295,26 @@ export default class ColorsList extends Component {
           {!this.state.isProDetails && (
             <View style={{ paddingHorizontal: 15 }}>
               <Text style={styles.about}>
-               {data.description}
+                {data.description}
               </Text>
               <View style={styles.saperator} />
-              <Text style={styles.about}>CARE INSTRUCTIONS:</Text>
-              <Text style={styles.about}>
-                100% Cotton{"\n"}Hand-wash cold, Wash dark separately
-              </Text>
+              <Text style={styles.about}>{`${data.instruction.instruction_title}:`}</Text>
+              <View style={{flexDirection:'row',flex:1}}>
+                {data.instruction.instruction_items.map((a) => {
+                  return (
+                    <View style={{flexDirection:'row'}}>
+                    <Text style={styles.intrutionsubtitle}>
+                      {a}
+                    </Text>
+                    <Text>,</Text>
+                    </View>
+                  )
+                })}
+              </View>
               <View style={styles.saperator} />
               <Text style={styles.about}>
-                Product Code: 0988779889{"\n"}
-                Sold By: Singla Apparels{"\n"}
+                Product Code: {data.productcode}{"\n"}
+                Sold By: {data.productcode}{"\n"}
                 View Supplier Information
               </Text>
               <View style={styles.saperator} />
@@ -271,7 +336,10 @@ export default class ColorsList extends Component {
           )}
           {this.state.isProDetails && (
             <View style={styles.orderBooking}>
-              <OrderBooking data={data.available_sizes} />
+              <OrderBooking
+                data={data.available_sizes}
+                onQuantityChange={(size, quatity) => { this.onQuantitySelect(size, quatity) }}
+              />
             </View>
           )}
           <View style={styles.similarContainer}>
@@ -292,7 +360,7 @@ export default class ColorsList extends Component {
         <View style={styles.section2}>
           <TouchableOpacity
             style={styles.tab}
-            onPress={() => this.setState({ showPopup: true, for: "cart" })}
+            onPress={() => this.onAddToCartPres()}
           >
             <View style={{ justifyContent: "center" }}>
               <Image source={Images.cart} style={{ width: 20, height: 20 }} />

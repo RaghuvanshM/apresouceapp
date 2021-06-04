@@ -268,7 +268,6 @@ export default class StylesList extends Component {
       payload,
       null,
       (response) => {
-        console.log(response);
         this.setState({
           stylesArr:
             page === 0 ? response.data : [...stylesArr, ...response.data],
@@ -401,6 +400,7 @@ export default class StylesList extends Component {
           <View style={styles.numberOfStyles}>
             <Text style={styles.numberOfStylesLabel}>Style : {stylesArr.length +"/250"}</Text>
           </View>
+          
           <FlatList
             showsVerticalScrollIndicator={false}
             style={{ marginTop: 15 }}

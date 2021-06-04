@@ -11,7 +11,8 @@ export default class IncDecCounter extends Component {
     };
   }
 
-  inc = () => {
+  dec = () => {
+    console.log('increaset')
     if (this.state.value > 0) {
       this.setState({ value: this.state.value - 1 }, () => {
         if (this.props.onValueChange) {
@@ -21,7 +22,7 @@ export default class IncDecCounter extends Component {
     }
   };
 
-  dec = () => {
+  inc = () => {
     if (this.state.value < this.state.max) {
       this.setState({ value: this.state.value + 1 }, () => {
         if (this.props.onValueChange) {
@@ -34,13 +35,13 @@ export default class IncDecCounter extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TouchableOpacity style={styles.btn} onPress={() => this.inc()}>
+        <TouchableOpacity style={styles.btn} onPress={() => this.dec()}>
           <Text style={styles.label1}>-</Text>
         </TouchableOpacity>
         <View style={styles.value}>
           <Text style={styles.label}>{this.state.value}</Text>
         </View>
-        <TouchableOpacity style={styles.btn} onPress={() => this.dec()}>
+        <TouchableOpacity style={styles.btn} onPress={() => this.inc()}>
           <Text style={styles.label1}>+</Text>
         </TouchableOpacity>
       </View>

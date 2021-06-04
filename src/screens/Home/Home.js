@@ -324,7 +324,7 @@ getByTheDays = () => {
 
         {!this.state.isLoading && (
           <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.bannerSection}>
+            {/* <View style={styles.bannerSection}>
               <FlatListSlider
                 data={this.state.configurations.slides}
                 timer={5000}
@@ -335,7 +335,7 @@ getByTheDays = () => {
                 indicatorActiveWidth={30}
                 animation
               />
-            </View>
+            </View> */}
             <TouchableOpacity
               onPress={() =>
                 this.goToWebviewAction(this.state.configurations.webview.action)

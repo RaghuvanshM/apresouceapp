@@ -20,6 +20,7 @@ export default class OrderBooking extends Component {
   };
   render() {
     var data = this.state.data;
+    console.log(this.props)
     return (
       <View>
         <View style={styles.orderItem}>
@@ -46,7 +47,7 @@ export default class OrderBooking extends Component {
                 <Text style={styles.textbox}>{item.size}</Text>
               </View>
               <View style={styles.orderItem2}>
-                <IncDecCounter value={item.qty} onValueChange={(val) => {}} />
+                <IncDecCounter value={item.qty} onValueChange={(val) => {this.props.onQuantityChange(item.size,val)}} />
               </View>
               <View style={styles.orderItem3}>
                 <Text style={styles.textbox}>{item.wsp}</Text>

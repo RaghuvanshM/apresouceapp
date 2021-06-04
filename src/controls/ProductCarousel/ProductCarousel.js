@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { View, Text, ScrollView, Image } from "react-native";
 import Images from '../../utils/Images';
 import styles from "./style";
-
+import FastImage from 'react-native-fast-image';
 export default class ProductCarousel extends Component {
   constructor(props) {
     super(props);
@@ -19,7 +19,7 @@ export default class ProductCarousel extends Component {
     var k = 0;
     for (var i = 0; i < this.props.data.length; i += 3) {
       var row = { id: k };
-      console.log(row);
+  
       k++;
       this.state.indicators.push(row);
     }

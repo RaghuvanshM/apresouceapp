@@ -6,8 +6,8 @@ import AppConstants from "./AppConstants";
 export default {
   loggedInUser: null,
   countries: null,
-  selectedCountry:'91',
-  getLandingPage:true,
+  selectedCountry: "91",
+  getLandingPage: true,
   sendApiCall: async (
     url,
     payload,
@@ -16,17 +16,18 @@ export default {
     ErrorHandler,
     showAPIError
   ) => {
+
     method = method ? method : "POST";
     var token = await AsyncStorage.getItem("token");
-    console.log("token",token) ; 
-    
+    console.log("token", token);
+
     var headers = {
       "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
     };
     if (token) {
       var headers = {
         "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-        Authorization: 'Bearer ' + token
+        Authorization: "Bearer " + token,
       };
     }
     var callState = null;
@@ -45,9 +46,11 @@ export default {
       requestBody.body = body;
     }
     NetInfo.fetch().then((state) => {
+      console.log(AppConstants.baseUrl + url, requestBody)
       if (state.isConnected) {
         fetch(AppConstants.baseUrl + url, requestBody)
           .then((response) => {
+            console.log(response);
             callState = response.status;
             return response.json();
           })

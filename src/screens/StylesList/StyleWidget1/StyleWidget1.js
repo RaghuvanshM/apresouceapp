@@ -4,8 +4,7 @@ import Images from "../../../utils/Images";
 import styles from "./style";
 import Icon from 'react-native-vector-icons/FontAwesome'
 import AppConstants from "../../../utils/AppConstants";
-
-
+import FastImage from 'react-native-fast-image';
 export default class StyleWidget1 extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +23,7 @@ export default class StyleWidget1 extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image source ={{uri:AppConstants.baseUrl+data.image}} style={styles.productImg} />
+          <FastImage source ={{uri:AppConstants.baseUrl+data.image}} style={styles.productImg} />
         </View>
         <View style={{ flex: 1, paddingHorizontal: 10 }}>
           <View style={{flex:1}}>

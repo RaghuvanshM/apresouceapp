@@ -122,6 +122,13 @@ export default StyleSheet.create({
     fontSize: 16,
     fontFamily: Colors.font
   },
+  intrutionsubtitle: {
+    marginTop: '1%',
+    color: Colors.themeColor1,
+    fontSize: 16,
+    fontFamily: Colors.font
+  },
+  
   saperator: {
     width: "80%",
     height: 2,
