@@ -50,7 +50,6 @@ import Toast from 'react-native-simple-toast';
   };
   setLoggedInUser = (token,user) => {
     AsyncStorage.setItem("token", token);
-    console.log("user",user);
    // AsyncStorage.setItem("user", JSON.stringify(user));
       this.props.saveUserData(user) ;
     this.props.navigation.navigate("greetingScreen");
@@ -64,13 +63,11 @@ import Toast from 'react-native-simple-toast';
       mobile: this.props.route.params.mobile,
       otp: this.state.otp,
     };
-    console.log(payload);
     AppviewModel.sendApiCall(
       "/login-signup/otp-validate",
       payload,
       null,
       (response) => {
-        console.log( response);
         switch (response.status) {
           case 0:
             Alert.alert(
@@ -111,7 +108,7 @@ import Toast from 'react-native-simple-toast';
       payload,
       null,
       (response) => {
-        console.log(response);
+
         if(response.status == 1){
           Toast.show("An OTP has been sent to your Registered Mobile Number. ",Toast.SHORT)
         }

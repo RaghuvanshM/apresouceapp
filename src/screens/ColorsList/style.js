@@ -30,7 +30,9 @@ export default StyleSheet.create({
   imageTab: {
     alignSelf: "flex-start",
     marginRight: 10,
+   
   },
+  
   imageTabImg: {
     width: 70,
     height: 70,

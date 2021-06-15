@@ -21,7 +21,7 @@ import FlatListSlider from "../../controls/FlatListSlider/FlatListSlider";
 
 export default class Home extends Component {
   constructor(props) {
-    super(props); 
+    super(props);
     this.state = {
       isLoading: true,
       configurations: null,
@@ -29,7 +29,7 @@ export default class Home extends Component {
       trends: [],
       occasions: [],
       buyTheDays: [],
-      isBorder:true,
+      isBorder: true,
     };
   }
 
@@ -49,13 +49,13 @@ export default class Home extends Component {
         unique_id: getUniqueId(),
         app_type: AppConstants.appType,
       };
-      console.log(payload);
+
       AppviewModel.sendApiCall(
         "/get-landing-page-configurations/get-landing-page",
         payload,
         null,
         (response) => {
-          console.log(response);
+
           this.setState({ configurations: response, isLoading: false });
           this.setLandingPageConfigurations(response);
         },
@@ -71,18 +71,18 @@ export default class Home extends Component {
   };
 
   getCategories = () => {
-      AppviewModel.sendApiCall(
-        "/category/get",
-        null,
-        'GET',
-        (response) => {
-          console.log(response);
-          this.setState({categories:response.categories});
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+    AppviewModel.sendApiCall(
+      "/category/get",
+      null,
+      'GET',
+      (response) => {
+
+        this.setState({ categories: response.categories });
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   };
 
   getTrends = () => {
@@ -91,44 +91,43 @@ export default class Home extends Component {
       null,
       'GET',
       (response) => {
-        console.log(response);
-        this.setState({trends:response.trends});
+        this.setState({ trends: response.trends });
       },
       (error) => {
         console.log(error);
       }
     );
-};
+  };
 
-getOccasions = () => {
-  AppviewModel.sendApiCall(
-    "/ocassions/get",
-    null,
-    'GET',
-    (response) => {
-      console.log(response);
-      this.setState({occasions:response.ocassions});
-    },
-    (error) => {
-      console.log(error);
-    }
-  );
-};
+  getOccasions = () => {
+    AppviewModel.sendApiCall(
+      "/ocassions/get",
+      null,
+      'GET',
+      (response) => {
+        this.setState({ occasions: response.ocassions });
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
 
-getByTheDays = () => {
-  AppviewModel.sendApiCall(
-    "/buythedays/get",
-    null,
-    'GET',
-    (response) => {
-      console.log(response);
-      this.setState({buyTheDays:response.buythedays});
-    },
-    (error) => {
-      console.log(error);
-    }
-  );
-};
+  getByTheDays = () => {
+    AppviewModel.sendApiCall(
+      "/buythedays/get",
+      null,
+      'GET',
+      (response) => {
+        console.log(response.buythedays)
+
+        this.setState({ buyTheDays: response.buythedays });
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
 
   setLandingPageConfigurations = async (data) => {
     AsyncStorage.setItem("landingpage_configurations", JSON.stringify(data));
@@ -137,25 +136,26 @@ getByTheDays = () => {
   setUserInApp = async () => {
     var user = await AsyncStorage.getItem("user");
     user = JSON.parse(user);
-    console.log(user);
+
     AppviewModel.loggedInUser = user;
   };
 
   renderCategory = (category, index) => {
-    console.log("category",category.id);
+
     return (
       <TouchableOpacity
+
         onPress={() => {
           this.props.navigation.navigate("subCategoryListScreen", {
-            title: category.title ,
-            id:category.id,
+            title: category.title,
+            id: category.id,
           });
         }}
-        key={category.id}
+        key={String(index)}
         style={styles.category}
       >
-        <View  style={[styles.catImage,{borderRadius: !this.state.isBorder ? 0 :200 }]} >
-          <Image source={{uri:AppConstants.baseUrl+category.image}} style={{width:'100%',height:'100%',resizeMode:'cover'}}/>
+        <View style={[styles.catImage, { borderRadius: !this.state.isBorder ? 0 : 200 }]} >
+          <Image source={{ uri: AppConstants.baseUrl + category.image }} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
         </View>
         <Text style={styles.catLabel}>{category.title}</Text>
       </TouchableOpacity>
@@ -164,9 +164,9 @@ getByTheDays = () => {
 
   renderTrend = (occasion, index) => {
     return (
-      <View key={occasion.id} style={styles.trend}>
+      <View key={String(index)} style={styles.trend}>
         <View style={styles.trendImage}>
-        <Image source={{uri:AppConstants.baseUrl+occasion.image}} style={{width:'100%',height:'100%',resizeMode:'cover'}}/>
+          <Image source={{ uri: AppConstants.baseUrl + occasion.image }} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
         </View>
       </View>
     );
@@ -179,17 +179,21 @@ getByTheDays = () => {
         style={[styles.occasion, index % 4 == 0 ? { marginRight: 0 } : {}]}
       >
         <View style={styles.occImage}>
-        <Image source={{uri:AppConstants.baseUrl+occasion.image}} style={{width:'100%',height:'100%',resizeMode:'cover'}}/>
+          <Image source={{ uri: AppConstants.baseUrl + occasion.image }} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
         </View>
       </View>
     );
   };
 
   renderBuyTheDay = (buyTheDay, index) => {
+    // ImagesVideosNewsShoppingMore
+    // Settings
+    // Tools
+
     return (
       <View key={buyTheDay.id} style={styles.buyTheDay}>
         <View style={styles.buyTheDayImage}>
-        <Image source={{uri:AppConstants.baseUrl+buyTheDay.image}} style={{width:'100%',height:'100%',resizeMode:'cover'}}/>
+          <Image source={{ uri: AppConstants.baseUrl + buyTheDay.image }} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
         </View>
         <Text style={styles.buyTheDayLabel}>{buyTheDay.title}</Text>
       </View>
@@ -264,6 +268,7 @@ getByTheDays = () => {
         <HeadingView title={"Categories"} />
         <View style={styles.categories}>
           {this.state.categories.map((item, index) => {
+
             return this.renderCategory(item, index);
           })}
         </View>
@@ -316,6 +321,12 @@ getByTheDays = () => {
 
   render() {
     const screenWidth = Math.round(Dimensions.get("window").width);
+    const images = [
+      "https://source.unsplash.com/1024x768/?nature",
+      "https://source.unsplash.com/1024x768/?water",
+      "https://source.unsplash.com/1024x768/?girl",
+      "https://source.unsplash.com/1024x768/?tree",
+    ]
     return (
       <View style={styles.container}>
         <MainHeader {...this.props} />
@@ -324,9 +335,9 @@ getByTheDays = () => {
 
         {!this.state.isLoading && (
           <ScrollView showsVerticalScrollIndicator={false}>
-            {/* <View style={styles.bannerSection}>
-              <FlatListSlider
-                data={this.state.configurations.slides}
+            <View style={styles.bannerSection}>
+              {/* <FlatListSlider
+                data={images}
                 timer={5000}
                 onPress={(item) => alert(JSON.stringify(item))}
                 indicatorContainerStyle={{ position: "absolute", bottom: 20 }}
@@ -334,8 +345,8 @@ getByTheDays = () => {
                 indicatorInActiveColor={"#ffffff"}
                 indicatorActiveWidth={30}
                 animation
-              />
-            </View> */}
+              /> */}
+            </View>
             <TouchableOpacity
               onPress={() =>
                 this.goToWebviewAction(this.state.configurations.webview.action)

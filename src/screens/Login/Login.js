@@ -35,13 +35,13 @@ export default class Login extends Component {
       unique_id: getUniqueId(),
       app_type: AppConstants.appType
     };
-    console.log(payload);
+
     AppviewModel.sendApiCall(
       "/master/country?app_type=21&unique_id=925e181d-c31b-4eca-81da-81909b201f33",
       payload,
       'GET',
       (response) => {
-        console.log(response);
+        
         AppviewModel.countries = response.data;
         var tranform = response.data.map((item)=>{
           var row = {};
@@ -49,7 +49,7 @@ export default class Login extends Component {
           row.value=item.CountryCode;
           return row;
         })
-        console.log(tranform);
+
         this.setState({countries:tranform})
       },
       (error) => {
@@ -65,13 +65,12 @@ export default class Login extends Component {
       country_code: this.state.selectedCountry,
       mobile: this.state.mobile,
     };
-    console.log("patload@@",payload);
     AppviewModel.sendApiCall(
       "/login-signup/login",
       payload,
       null,
       (response) => {
-        console.log(response);
+      
         switch (response.status) {
           case 1:
             this.props.navigation.navigate("verifyScreen",{mobile:this.state.mobile});

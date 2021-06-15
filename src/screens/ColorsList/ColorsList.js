@@ -15,12 +15,13 @@ import Images from "../../utils/Images";
 import Header from "../Header/Header";
 import OrderBooking from "../OrderBooking/OrderBooking";
 import styles from "./style";
-import Icon from 'react-native-vector-icons/FontAwesome';
-import FastImage from 'react-native-fast-image';
-import cloneDeep from 'lodash/cloneDeep';
+import Icon from "react-native-vector-icons/FontAwesome";
+import FastImage from "react-native-fast-image";
+import cloneDeep from "lodash/cloneDeep";
 import AppviewModel from "../../utils/AppviewModel";
-import axios from 'axios'
+import axios from "axios";
 import AppConstants from "../../utils/AppConstants";
+import style from "../MainHeader/style";
 
 export default class ColorsList extends Component {
   colors = [
@@ -36,12 +37,18 @@ export default class ColorsList extends Component {
   ];
   constructor(props) {
     super(props);
+    console.log(props);
     this.state = {
       isProDetails: false,
       listView: true,
       showPopup: false,
+      showWishlistPopup: false,
+
       addtocartdata: [],
       addtocart: [],
+      selectedcolorid: props.route.params.data.available_colors[0].id,
+      selectedcolorstyleid:
+        props.route.params.data.available_colors[0].style_id,
       for: "",
       similarProducts: [
         { id: 1, title: "", image: Images.cat1 },
@@ -80,72 +87,103 @@ export default class ColorsList extends Component {
     );
   };
   addToCartApiCall = () => {
-    let  {data } = this.props.route.params
-    const { addtocartdata } = this.state;
+    let { addtocart, selectedcolorid, selectedcolorstyleid } = this.state;
     var payload = {
-      color_id: 1,
-      style_id:123,
-      subcategory_id:12333,
-      quatity:[{"size":"xxxL","qty":20},{"size":"Mm","qty":25}]
+      color_id: selectedcolorid,
+      style_id: selectedcolorstyleid,
+      subcategory_id: this.props.route.params.data.subcategory_id,
+      quantity: JSON.stringify(addtocart),
     };
- console.log('payload',payload)
+   
     AppviewModel.sendApiCall(
       "/cart/addcart",
       payload,
       null,
       (response) => {
-         console.log(response)
-        this.setState({
-          stylesArr:
-            page === 0 ? response.data : [...stylesArr, ...response.data],
-          isLoading: false, dataTotalSize: response.data.length
-        });
-        if (response.data.length == 0) {
-          this.setState({ DataFound: false });
-        } else {
-          this.setState({ DataFound: true });
+        console.log(response);
+        if (response.status === "Success") {
+          this.setState({ showPopup: true });
         }
       },
       (error) => {
         console.log(error);
       }
     );
-
-
+  };
+  addToWishList = () => {
+    // this.setState({ showPopup: true, for: "wishlist" })},
+    let { addtocart, selectedcolorid, selectedcolorstyleid } = this.state;
+    var payload = {
+      color_id: selectedcolorid,
+      style_id: selectedcolorstyleid,
+      subcategory_id: this.props.route.params.data.subcategory_id,
+      quantity: JSON.stringify(addtocart),
+    };
+   
+    AppviewModel.sendApiCall(
+      "/wishlist/addwishlist",
+      payload,
+      null,
+      (response) => {
+        if (response.status === "Success") {
+          this.setState({ showWishlistPopup: true, showPopup: true });
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   };
   closePopup = () => {
     this.setState({ showPopup: false });
   };
   onAddToCartPres = () => {
-    this.setState({ showPopup: true, for: "wishlist" })
-    this.addToCartApiCall()
-  }
+    this.setState({ showPopup: true, showWishlistPopup: false });
+    this.addToCartApiCall();
+  };
   onQuantitySelect = (size, quatity) => {
-    let { addtocartdata, addtocart } = this.state
-    const cartdata = cloneDeep(addtocartdata);
-    let singledata = { "size": size, "qty": quatity }
-    const selectedIndex = cartdata.findIndex(d => d.size === singledata.size);
-    if (selectedIndex === -1) {
-      addtocart.push(singledata)
-    }
-    else {
+    let { addtocartdata, addtocart } = this.state;
+    let singledata = { size: size, qty: quatity };
+    const selectedIndex = addtocart.findIndex((d) => d.size === size);
+
+    if (selectedIndex !== -1) {
       addtocart[selectedIndex] = singledata;
     }
-    console.log(addtocart)
-    this.setState({ addtocartdata: addtocart })
+    const quantityzeroindex = addtocart.findIndex((d) => d.qty === 0);
+
+    if (quantityzeroindex !== -1) {
+      addtocart.splice(quantityzeroindex, 1);
+    }
+  };
+  changeSelectedColor = (colordata) => {
+    let { id, style_id } = colordata;
+
+    this.setState({
+      selectedcolorid: id,
+      selectedcolorstyleid: style_id,
+    });
+  };
+  componentDidMount() {
+    let { addtocart } = this.state;
+    let { data } = this.props.route.params;
+    data.available_sizes.map((a) => {
+      let singledata = { size: a.size, qty: a.qty };
+      addtocart.push(singledata);
+    });
   }
   render() {
     var data = this.props.route.params.data;
+    let { selectedcolorid, showWishlistPopup } = this.state;
     return (
       <View style={styles.container}>
-        {/* <Modal
+        <Modal
           transparent={true}
           visible={this.state.showPopup}
           onRequestClose={() => this.closePopup()}
         >
           <Popup onClose={() => this.closePopup()}>
             <View style={styles.popup}>
-              <Image source={Images.success} style={styles.successIcon}/>
+              <Image source={Images.success} style={styles.successIcon} />
               {this.state.for == "cart" && (
                 <View style={{ width: "100%", alignItems: "center" }}>
                   <View style={styles.popupImg} />
@@ -155,9 +193,9 @@ export default class ColorsList extends Component {
               )}
             </View>
             <Text style={styles.label4}>
-              {this.state.for == "cart"
-                ? "Your product has been successfully added to the Cart"
-                : "Your product has been added to the wishlist"}
+              {showWishlistPopup
+                ? "Your product has been added to the wishlist"
+                : "Your product has been successfully added to the Cart"}
             </Text>
             <Button
               title={"Continue Shopping"}
@@ -175,7 +213,7 @@ export default class ColorsList extends Component {
               />
             )}
           </Popup>
-        </Modal> */}
+        </Modal>
         <Header
           title={data.title}
           {...this.props}
@@ -188,8 +226,9 @@ export default class ColorsList extends Component {
             <Text style={styles.proIdLabel}>Product ID : {data.id}</Text>
           </View>
           <View style={{ borderBottomWidth: 1, alignSelf: "center" }}>
-            <Text style={styles.label1}>Select among {data.available_colors.length} Color</Text>
-
+            <Text style={styles.label1}>
+              Select among {data.available_colors.length} Color
+            </Text>
           </View>
           <View>
             <ScrollView
@@ -199,9 +238,24 @@ export default class ColorsList extends Component {
             >
               {data.available_colors.map((item, index) => {
                 return (
-                  <View style={styles.imageTab} key={index}>
+                  <TouchableOpacity
+                    style={
+                      selectedcolorid === item.id
+                        ? {
+                            ...styles.imageTab,
+                            borderWidth: 2,
+                            borderColor: `${item.color_code}`,
+                          }
+                        : { ...styles.imageTab }
+                    }
+                    key={index}
+                    onPress={() => {
+                      this.changeSelectedColor(item);
+                    }}
+                  >
                     <View style={styles.imageTabImg}>
-                      <FastImage resizeMode='stretch'
+                      <FastImage
+                        resizeMode="stretch"
                         source={{ uri: AppConstants.baseUrl + data.image }}
                         style={styles.imageTabImg}
                       />
@@ -211,9 +265,10 @@ export default class ColorsList extends Component {
                         source={Images.heart}
                         style={styles.imageLabelHeart}
                       />{" "} */}
-                      {item.color.charAt(0).toUpperCase() + item.color.substring(1)}
+                      {item.color.charAt(0).toUpperCase() +
+                        item.color.substring(1)}
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 );
               })}
             </ScrollView>
@@ -223,7 +278,7 @@ export default class ColorsList extends Component {
               <FastImage
                 style={[styles.img, { borderRadius: 5 }]}
                 source={{ uri: AppConstants.baseUrl + data.image }}
-                resizeMode='cover'
+                resizeMode="cover"
               />
               {/* <View style={styles.img} /> */}
             </View>
@@ -233,12 +288,15 @@ export default class ColorsList extends Component {
                 showsVerticalScrollIndicator={false}
               >
                 {data.available_colors.map((item, index) => {
-                  return <View key={index} style={styles.subImage} >
-                    <FastImage resizeMode="stretch"
-                      source={{ uri: AppConstants.baseUrl + data.image }}
-                      style={{ ...styles.subImage, borderRadius: 5 }}
-                    />
-                  </View>
+                  return (
+                    <View key={index} style={styles.subImage} key={index}>
+                      <FastImage
+                        resizeMode="stretch"
+                        source={{ uri: AppConstants.baseUrl + data.image }}
+                        style={{ ...styles.subImage, borderRadius: 5 }}
+                      />
+                    </View>
+                  );
                 })}
               </ScrollView>
             </View>
@@ -247,14 +305,23 @@ export default class ColorsList extends Component {
             <Text style={styles.title}>
               {data.title} : {data.subtitle}
             </Text>
-            <Text style={styles.priceLabel}><Icon name="rupee" />{data.piece_rate}</Text>
+            <Text style={styles.priceLabel}>
+              <Icon name="rupee" />
+              {data.piece_rate}
+            </Text>
             <View style={{ flexDirection: "row" }}>
-              <Text style={styles.mrpLabel}><Icon name="rupee" />{data.piece_rate}/pc</Text>
+              <Text style={styles.mrpLabel}>
+                <Icon name="rupee" />
+                {data.piece_rate}/pc
+              </Text>
               <Text style={[{ flex: 1, textAlign: "center" }, styles.mrpLabel]}>
                 {data.margin} Margin
               </Text>
               <Text style={styles.mrpLabel}>
-                MRP: <Text style={{ color: "green" }}><Icon name="rupee" /> {data.price}/-</Text>
+                MRP:{" "}
+                <Text style={{ color: "green" }}>
+                  <Icon name="rupee" /> {data.price}/-
+                </Text>
               </Text>
             </View>
           </View>
@@ -294,27 +361,27 @@ export default class ColorsList extends Component {
 
           {!this.state.isProDetails && (
             <View style={{ paddingHorizontal: 15 }}>
-              <Text style={styles.about}>
-                {data.description}
-              </Text>
+              <Text style={styles.about}>{data.description}</Text>
               <View style={styles.saperator} />
-              <Text style={styles.about}>{`${data.instruction.instruction_title}:`}</Text>
-              <View style={{flexDirection:'row',flex:1}}>
-                {data.instruction.instruction_items.map((a) => {
+              <Text
+                style={styles.about}
+              >{`${data.instruction.instruction_title}:`}</Text>
+              <View style={{ flexDirection: "row", flex: 1 }}>
+                {data.instruction.instruction_items.map((a, index) => {
                   return (
-                    <View style={{flexDirection:'row',paddingRight:20}}>
-                    <Text style={styles.intrutionsubtitle}>
-                      {a}
-                    </Text>
-                    <Text>,</Text>
+                    <View style={{ flexDirection: "row" }} key={index}>
+                      <Text style={styles.intrutionsubtitle}>{a}</Text>
+                      <Text>,</Text>
                     </View>
-                  )
+                  );
                 })}
               </View>
               <View style={styles.saperator} />
               <Text style={styles.about}>
-                Product Code: {data.productcode}{"\n"}
-                Sold By: {data.productcode}{"\n"}
+                Product Code: {data.productcode}
+                {"\n"}
+                Sold By: {data.productcode}
+                {"\n"}
                 View Supplier Information
               </Text>
               <View style={styles.saperator} />
@@ -338,7 +405,9 @@ export default class ColorsList extends Component {
             <View style={styles.orderBooking}>
               <OrderBooking
                 data={data.available_sizes}
-                onQuantityChange={(size, quatity) => { this.onQuantitySelect(size, quatity) }}
+                onQuantityChange={(size, quatity) => {
+                  this.onQuantitySelect(size, quatity);
+                }}
               />
             </View>
           )}
@@ -371,7 +440,9 @@ export default class ColorsList extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.tab, styles.divider]}
-            onPress={() => this.setState({ showPopup: true, for: "wishlist" })}
+            onPress={() => {
+              this.addToWishList();
+            }}
           >
             <View style={{ justifyContent: "center" }}>
               <Image source={Images.heartWhite} style={styles.tabIcon} />

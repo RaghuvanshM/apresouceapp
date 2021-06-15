@@ -4,6 +4,9 @@ import Images from "../../utils/Images";
 import Header from "../Header/Header";
 import SubCategoryWidget from "../SubCatogoryList/SubCategoryWidget/SubcategoryWidget";
 import styles from "./style";
+import AppviewModel from "../../utils/AppviewModel";
+import SubcategoryCard from '../Cart/Subcategorycard/Subcategorycard'
+
 
 export default class Wishlist extends Component {
   constructor(props) {
@@ -26,21 +29,48 @@ export default class Wishlist extends Component {
           styles: [{ colors: [1, 2, 3] }, { colors: [1, 2, 3] }],
         },
       ],
+      wishListData:[]
+
+      
     };
   }
-
-  renderList = ({ item, index }) => {
-    return (
-      <SubCategoryWidget
-        data={item}
-        index={index}
-        {...this.props}
-        showWishlistOptions={true}
-      />
+  getWishlistSubCategory = () => {
+    this.setState({ isloading: true })
+    AppviewModel.sendApiCall(
+      // "/ocassions/get",  
+      "/wishlist/getsubcategories",
+      null,
+      'POST',
+      (response) => {
+        this.setState({
+          wishListData: response.data,
+          isloading: false
+        })
+      },
+      (error) => {
+        console.log(error);
+        this.setState({
+          isloading: false
+        })
+      }
     );
-  };
+  }
+componentDidMount(){
+  this.getWishlistSubCategory()
+}
+renderList = ({ item, index }) => {
+  return (
+    <SubcategoryCard
+      data={item}
+      index={index}
+      {...this.props}
+      showWishlistOptions={true}
+    />
+  );
+};
 
   render() {
+    let {wishListData} = this.state;
     return (
       <View style={styles.container}>
         <Header title={"Wishlist"} {...this.props} cart={true} />
@@ -49,7 +79,7 @@ export default class Wishlist extends Component {
             showsVerticalScrollIndicator={false}
             style={{ marginBottom: 20,marginTop:5 }}
             contentContainerStyle={{ paddingBottom: 10,paddingHorizontal:10 }}
-            data={this.state.data}
+            data={wishListData}
             renderItem={this.renderList}
             numColumns={2}
             keyExtractor={(item) => item.id + item.title}

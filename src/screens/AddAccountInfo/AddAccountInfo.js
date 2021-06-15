@@ -31,7 +31,7 @@ import {saveUserData} from '../../store/action'
       pincode: "",
       ReceiveUpdatesOnWhatsapp:false
     };
-    console.log(props.route.params.token);
+
   }
 
   setLoggedInUser = (response) => {
@@ -51,13 +51,13 @@ import {saveUserData} from '../../store/action'
       pincode:this.state.pincode,
       ReceiveUpdatesOnWhatsapp:this.state.ReceiveUpdatesOnWhatsapp
     };
-    console.log(payload);
+
     AppviewModel.sendApiCall(
       "/login-signup/registration",
       payload,
       null,
       (response) => {
-        console.log(response);
+      
         this.setLoggedInUser(response);
       },
       (error) => {

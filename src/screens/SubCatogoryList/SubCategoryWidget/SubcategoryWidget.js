@@ -9,8 +9,7 @@ export default class SubCategoryWidget extends Component {
   }
 
   render() {
-    var data = this.props.data;
-    var index = this.props.index;
+   let {data,index} = this.props
     return (
       <View style={styles.container}>
         <TouchableOpacity
@@ -36,7 +35,7 @@ export default class SubCategoryWidget extends Component {
               {data.title}
             </Text>
             
-            {(this.props.showCartOptions || this.props.showWishlistOptions) && (
+            {/* {(this.props.showCartOptions || this.props.showWishlistOptions) && (
               <View>
                 <Text style={styles.label1} numberOfLines={1}>
                   Color : 04
@@ -45,7 +44,7 @@ export default class SubCategoryWidget extends Component {
                   Style : {data.styles.length}
                 </Text>
               </View>
-            )}
+            )} */}
             {this.props.showCartOptions && (
               <View>
                 <Text style={styles.label1} numberOfLines={1}>

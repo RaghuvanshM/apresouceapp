@@ -268,6 +268,7 @@ export default class StylesList extends Component {
       payload,
       null,
       (response) => {
+        console.log('/styles',response)
         this.setState({
           stylesArr:
             page === 0 ? response.data : [...stylesArr, ...response.data],

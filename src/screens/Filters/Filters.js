@@ -83,7 +83,6 @@ export default class Filters extends Component {
     this.setState({ selectedFilter: this.state.filters[i] });
   };
   render() {
-    console.log(this.state.selectedFilter);
     return (
       <View style={styles.container}>
         <View style={styles.closeSection}>

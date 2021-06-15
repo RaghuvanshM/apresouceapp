@@ -33,13 +33,11 @@ export default class Splash extends Component {
       app_version: AppConstants.appVersion,
       extra_info: null,
     };
-    console.log(payload);
     AppviewModel.sendApiCall(
       "/login-signup/app-status",
       payload,
       null,
       (response) => {
-        console.log(response);
         this.getConf(response);        
       },
       (error) => {

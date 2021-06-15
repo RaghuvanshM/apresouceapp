@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { View, Text, ScrollView } from "react-native";
 import styles from "./style";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from "react-native-vector-icons/FontAwesome";
+import FastImage from "react-native-fast-image";
+import AppConstants from "../../../utils/AppConstants";
 
 export default class StyleWidget2 extends Component {
   constructor(props) {
@@ -22,7 +24,11 @@ export default class StyleWidget2 extends Component {
       <View style={styles.container}>
         <View style={styles.imageSection}>
           <View style={styles.mainImage}>
-            <View style={styles.img} />
+            <FastImage
+              source={{ uri: AppConstants.baseUrl + data.image }}
+              style={styles.productImg}
+             
+            />
           </View>
           {/* <View style={styles.listImages}>
             <ScrollView style={styles.scroll}>
@@ -57,7 +63,7 @@ export default class StyleWidget2 extends Component {
                 {data.piece_rate}/pc
               </Text>
               <Text style={styles.marginLabel}>
-                WSP: <Icon name="rupee"/> 
+                WSP: <Icon name="rupee" />
                 <Text style={{ color: "green" }}> {data.piece_rate}/pc</Text>
               </Text>
             </View>
@@ -68,7 +74,8 @@ export default class StyleWidget2 extends Component {
             </View>
             <View>
               <Text style={styles.marginLabel}>
-                MRP: <Icon name="rupee"/> <Text style={{ color: "green" }}>{data.price}/-</Text>
+                MRP: <Icon name="rupee" />{" "}
+                <Text style={{ color: "green" }}>{data.price}/-</Text>
               </Text>
             </View>
           </View>

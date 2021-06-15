@@ -1,9 +1,10 @@
-import React, { Component } from "react";
+import React, { Component,Fragment } from "react";
 import {
   View,
   Text,
   FlatList,
   Image,
+  ActivityIndicator,
   TouchableOpacity,
   Modal,
 } from "react-native";
@@ -14,6 +15,7 @@ import styles from "./style";
 import ColorsCartWidget from "./ColorsCartWidget/ColorsCartWidget";
 import Popup from "../../controls/Popup/Popup";
 import Button from "../../controls/Button/Button";
+import AppviewModel from "../../utils/AppviewModel";
 
 export default class ColorsCart extends Component {
   constructor(props) {
@@ -21,6 +23,8 @@ export default class ColorsCart extends Component {
     this.state = {
       listView: true,
       showPopup: false,
+      cartColorData: [],
+      isloading:false,
       styles: [
         {
           id: 1,
@@ -225,18 +229,61 @@ export default class ColorsCart extends Component {
       ],
     };
   }
-
+  getCartColor = () => {
+    this.setState({ isloading: true });
+    let payload = {
+      style_id: this.props.route.params.id,
+    };
+    AppviewModel.sendApiCall(
+      "/cart/getcolors",
+      payload,
+      null,
+      (response) => {
+        
+        if (response.status === "Success") {
+          this.setState({
+            cartColorData: response.data,
+            isloading: false,
+          });
+        }
+      },
+      (error) => {
+        console.log(error);
+        this.setState({
+          isloading: false,
+        });
+      }
+    );
+  };
+  componentDidMount() {
+   this.getCartColor();
+  }
   renderStyles = ({ item }) => {
-    return <ColorsCartWidget data={item} showCartOptions={true} />;
+    return <ColorsCartWidget data={item} showCartOptions={true} {...this.props}/>;
   };
   closePopup = () => {
-    this.setState({ showPopup: false },()=>{
-      this.props.navigation.navigate('homeTabNavigator')
+    this.setState({ showPopup: false }, () => {
+      this.props.navigation.navigate("homeTabNavigator");
     });
   };
 
   render() {
+    let { cartColorData,isloading } = this.state;
     return (
+      <Fragment>
+         {isloading && (
+        <View
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(3,3,3, 0.8)',
+            zIndex: 5,
+          }}>
+          <ActivityIndicator size="large" color="#fff" />
+        </View>
+      )}
       <View style={styles.container}>
         <Modal
           transparent={true}
@@ -269,9 +316,10 @@ export default class ColorsCart extends Component {
             showsVerticalScrollIndicator={false}
             style={{ marginTop: 15 }}
             contentContainerStyle={{ paddingHorizontal: 10 }}
-            data={this.state.styles}
+           data={cartColorData.length && cartColorData[0].colors}
+             //data={this.state.styles}
             renderItem={this.renderStyles}
-            keyExtractor={(item) => item.id + item.title}
+            keyExtractor={(item,index) => String(index)}
           />
         </View>
         <TouchableOpacity
@@ -281,6 +329,7 @@ export default class ColorsCart extends Component {
           <Text style={styles.label3}>REQUEST QUOTE</Text>
         </TouchableOpacity>
       </View>
+      </Fragment>
     );
   }
 }

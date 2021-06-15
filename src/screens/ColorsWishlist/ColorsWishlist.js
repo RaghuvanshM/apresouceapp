@@ -5,12 +5,16 @@ import Images from "../../utils/Images";
 import Header from "../Header/Header";
 import styles from "./style";
 import ColorsCartWidget from "../ColorsCart/ColorsCartWidget/ColorsCartWidget";
+import AppviewModel from "../../utils/AppviewModel";
 
 export default class ColorsWishlist extends Component {
   constructor(props) {
     super(props);
+    console.log(props)
     this.state = {
       listView: true,
+      isloading:false,
+      wishlistColorData:[],
       styles: [
         {
           id: 1,
@@ -215,12 +219,43 @@ export default class ColorsWishlist extends Component {
       ],
     };
   }
+  getWishListColor = () => {
+    this.setState({ isloading: true });
+    let payload = {
+      style_id: this.props.route.params.id,
+    };
+    AppviewModel.sendApiCall(
+      "/wishlist/getcolors",
+      payload,
+      null,
+      (response) => {
+        console.log(response)
+        if (response.status === "Success") {
+          this.setState({
+            wishlistColorData: response.data,
+            isloading: false,
+          });
+        }
+      },
+      (error) => {
+        console.log(error);
+        this.setState({
+          isloading: false,
+        });
+      }
+    );
+  };
+  componentDidMount() {
+   this.getWishListColor();
+  }
 
   renderStyles = ({ item }) => {
-    return <ColorsCartWidget data={item} showWishlistOptions={true}/>;
+    return <ColorsCartWidget data={item} showWishlistOptions={true} {...this.props}/>;
   };
 
   render() {
+    let {wishlistColorData} = this.state;
+    console.log()
     return (
       <View style={styles.container}>
         <Header title={"Colors"} {...this.props} cart={true} />
@@ -229,7 +264,7 @@ export default class ColorsWishlist extends Component {
             showsVerticalScrollIndicator={false}
             style={{ marginTop: 15 }}
             contentContainerStyle={{paddingHorizontal:10}}
-            data={this.state.styles}
+            data={wishlistColorData.length>0 && wishlistColorData[0].colors}
             renderItem={this.renderStyles}
             keyExtractor={(item) => item.id + item.title}
           />

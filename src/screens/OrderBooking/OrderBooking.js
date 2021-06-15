@@ -20,7 +20,7 @@ export default class OrderBooking extends Component {
   };
   render() {
     var data = this.state.data;
-    console.log(this.props)
+
     return (
       <View>
         <View style={styles.orderItem}>

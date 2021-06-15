@@ -53,13 +53,13 @@ export default class SubCategoryList extends Component {
       page_size: 20,
       page_index: page,
     };
-    console.log("payload@", payload);
+   
     AppviewModel.sendApiCall(
       "/subcategories",
       payload,
       null,
       (response) => {
-        console.log("Response==>", response);
+      
         this.setState({
           subCategories:
             page === 0 ? response.data : [...subCategories, ...response.data],

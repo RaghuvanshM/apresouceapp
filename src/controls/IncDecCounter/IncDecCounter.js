@@ -12,7 +12,7 @@ export default class IncDecCounter extends Component {
   }
 
   dec = () => {
-    console.log('increaset')
+
     if (this.state.value > 0) {
       this.setState({ value: this.state.value - 1 }, () => {
         if (this.props.onValueChange) {

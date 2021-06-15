@@ -95,5 +95,10 @@ export default StyleSheet.create({
   },
   scroll:{
     height:400
-  }
+  },
+  productImg: {
+   width: "100%",
+   aspectRatio: .78/ 1,
+    backgroundColor: "#e5e5e5",
+  },
 });

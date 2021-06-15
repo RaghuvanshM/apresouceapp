@@ -18,9 +18,7 @@ export default {
   ) => {
 
     method = method ? method : "POST";
-    var token = await AsyncStorage.getItem("token");
-    console.log("token", token);
-
+  var token =  await AsyncStorage.getItem("token");
     var headers = {
       "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
     };
@@ -46,11 +44,10 @@ export default {
       requestBody.body = body;
     }
     NetInfo.fetch().then((state) => {
-      console.log(AppConstants.baseUrl + url)
+  
       if (state.isConnected) {
         fetch(AppConstants.baseUrl + url, requestBody)
           .then((response) => {
-            console.log(response);
             callState = response.status;
             return response.json();
           })
